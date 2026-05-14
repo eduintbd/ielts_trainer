@@ -1,6 +1,6 @@
 import { cache } from 'react';
 import { createClient } from '@/lib/supabase/server';
-import { adminClient } from '@/lib/supabase/admin';
+import { getAdminClient } from '@/lib/supabase/admin';
 import type { User } from '@supabase/supabase-js';
 
 export interface SessionUser {
@@ -15,6 +15,7 @@ export interface SessionUser {
 /** Server-side authenticated user, request-deduped via React cache(). */
 export const getUser = cache(async (): Promise<User | null> => {
   const supabase = await createClient();
+  if (!supabase) return null;
   const { data: { user } } = await supabase.auth.getUser();
   return user;
 });
@@ -27,11 +28,14 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   const user = await getUser();
   if (!user) return null;
 
-  const { data: profile } = await adminClient
-    .from('profiles')
-    .select('full_name, avatar_url, role, target_exam')
-    .eq('id', user.id)
-    .single();
+  const admin = getAdminClient();
+  const { data: profile } = admin
+    ? await admin
+        .from('profiles')
+        .select('full_name, avatar_url, role, target_exam')
+        .eq('id', user.id)
+        .single()
+    : { data: null };
 
   return {
     id: user.id,

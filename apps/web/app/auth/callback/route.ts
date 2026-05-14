@@ -17,6 +17,11 @@ export async function GET(request: NextRequest) {
 
   if (code) {
     const supabase = await createClient();
+    if (!supabase) {
+      const url = new URL('/sign-in', origin);
+      url.searchParams.set('error', 'Auth is not configured on the server.');
+      return NextResponse.redirect(url);
+    }
     const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!exchangeError) {

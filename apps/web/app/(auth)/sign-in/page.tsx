@@ -49,6 +49,11 @@ export default function SignInPage() {
     e.preventDefault();
     setLoading(true);
     const supabase = createClient();
+    if (!supabase) {
+      toast.error('Auth is not configured. Add Supabase keys to .env.local.');
+      setLoading(false);
+      return;
+    }
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       toast.error(error.message);
@@ -63,6 +68,11 @@ export default function SignInPage() {
   async function signInWithOAuth(provider: 'google' | 'facebook') {
     setLoading(true);
     const supabase = createClient();
+    if (!supabase) {
+      toast.error('Auth is not configured. Add Supabase keys to .env.local.');
+      setLoading(false);
+      return;
+    }
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
