@@ -1,0 +1,44 @@
+services:
+  ai-service:
+    build: .
+    ports: ['8000:8000']
+    env_file: [.env]
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN}
+      MODEL_NAME: ${MODEL_NAME:-llama3.1:8b-instruct-q5_K_M}
+      WHISPER_MODEL: ${WHISPER_MODEL:-medium}
+      PIPER_VOICES_DIR: /piper-voices
+    volumes:
+      - ./piper-voices:/piper-voices:ro
+      - whisper-cache:/root/.cache/whisper
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    depends_on: [ollama]
+
+  ollama:
+    image: ollama/ollama:latest
+    ports: ['11434:11434']
+    volumes:
+      - ollama-data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ['CMD', 'ollama', 'list']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  ollama-data:
+  whisper-cache:

@@ -1,0 +1,45 @@
+{
+  "expo": {
+    "name": "IELTS Trainer",
+    "slug": "ielts-trainer",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "ielts-trainer",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFFFF"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.eduint.ieltstrainer",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "We use the microphone for AI speaking practice. Audio is uploaded only when you press record.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.eduint.ieltstrainer",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0F766E"
+      },
+      "permissions": ["RECORD_AUDIO", "INTERNET"]
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-sqlite",
+      ["expo-av", { "microphonePermission": "Allow IELTS Trainer to use the microphone for speaking practice." }]
+    ],
+    "experiments": { "typedRoutes": true }
+  }
+}

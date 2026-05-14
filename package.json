@@ -1,0 +1,43 @@
+{
+  "name": "ielts-trainer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "IELTS / TOEFL / PTE prep platform for Bangladeshi students.",
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "db:generate": "pnpm --filter @ielts/db db:generate",
+    "db:migrate": "pnpm --filter @ielts/db db:migrate",
+    "db:studio": "pnpm --filter @ielts/db db:studio",
+    "clean": "turbo run clean && rimraf node_modules"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.3",
+    "typescript": "^5.6.3",
+    "rimraf": "^6.0.1",
+    "prettier": "^3.4.2"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "react": "*",
+        "react-dom": "*",
+        "@types/react": "*",
+        "drizzle-orm": "*",
+        "zod": "*"
+      },
+      "ignoreMissing": ["react", "react-dom", "@types/react"]
+    },
+    "overrides": {
+      "@types/react": "^19.0.2",
+      "@types/react-dom": "^19.0.2"
+    }
+  }
+}
