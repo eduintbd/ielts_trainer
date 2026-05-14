@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import { Inter, Hind_Siliguri } from 'next/font/google';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { QueryProvider } from '@/components/providers/query-provider';
+import { LanguageProvider } from '@/components/providers/language-provider';
+import { AuthProvider } from '@/components/providers/auth-provider';
 import { Toaster } from 'sonner';
 import './globals.css';
 
@@ -35,10 +37,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${hind.variable}`}>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <QueryProvider>
-            {children}
-            <Toaster richColors position="top-right" />
-          </QueryProvider>
+          <AuthProvider>
+            <LanguageProvider>
+              <QueryProvider>
+                {children}
+                <Toaster richColors position="top-right" />
+              </QueryProvider>
+            </LanguageProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

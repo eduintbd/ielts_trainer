@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getSessionUser } from '@/lib/session';
-import { isAdmin } from '@ielts/auth';
 
 const ADMIN_NAV = [
   { href: '/admin', label: 'Overview' },
@@ -17,7 +16,7 @@ const ADMIN_NAV = [
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await getSessionUser();
   if (!user) redirect('/sign-in?redirectTo=/admin');
-  if (!isAdmin(user)) redirect('/dashboard');
+  if (user.role !== 'admin') redirect('/dashboard');
 
   return (
     <div className="flex min-h-screen">

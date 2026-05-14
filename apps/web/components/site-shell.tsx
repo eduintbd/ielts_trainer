@@ -1,35 +1,69 @@
+'use client';
+
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { LanguageToggle } from '@/components/language-toggle';
+import { useLanguage } from '@/components/providers/language-provider';
+import { useAuth } from '@/components/providers/auth-provider';
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
+  const { t } = useLanguage();
+  const { user, signOut } = useAuth();
+  const router = useRouter();
+  const year = new Date().getFullYear().toString();
+
+  async function handleSignOut() {
+    await signOut();
+    router.push('/');
+    router.refresh();
+  }
+
   return (
     <main className="min-h-screen">
       <header className="border-b">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <Link href="/" className="text-xl font-bold text-primary">
-            IELTS Trainer
+            {t('nav.logo')}
           </Link>
           <nav className="hidden items-center gap-1 md:flex">
             <Button asChild variant="ghost" size="sm">
-              <Link href="/english">English Mastery</Link>
+              <Link href="/english">{t('nav.english')}</Link>
             </Button>
             <Button asChild variant="ghost" size="sm">
-              <Link href="/ielts">IELTS</Link>
+              <Link href="/ielts">{t('nav.ielts')}</Link>
             </Button>
             <Button asChild variant="ghost" size="sm">
-              <Link href="/toefl">TOEFL</Link>
+              <Link href="/toefl">{t('nav.toefl')}</Link>
             </Button>
             <Button asChild variant="ghost" size="sm">
-              <Link href="/pte">PTE</Link>
+              <Link href="/pte">{t('nav.pte')}</Link>
+            </Button>
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/courses">{t('nav.courses')}</Link>
             </Button>
           </nav>
           <div className="flex items-center gap-2">
-            <Button asChild variant="ghost" size="sm">
-              <Link href="/sign-in">Sign in</Link>
-            </Button>
-            <Button asChild size="sm">
-              <Link href="/sign-up">Get started</Link>
-            </Button>
+            <LanguageToggle />
+            {user ? (
+              <>
+                <Button asChild variant="ghost" size="sm">
+                  <Link href="/dashboard">Dashboard</Link>
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleSignOut}>
+                  Sign out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button asChild variant="ghost" size="sm">
+                  <Link href="/sign-in">{t('nav.signin')}</Link>
+                </Button>
+                <Button asChild size="sm">
+                  <Link href="/sign-up">{t('nav.getstarted')}</Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -39,43 +73,42 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       <footer className="mt-16 border-t">
         <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 md:grid-cols-4">
           <div>
-            <p className="text-base font-semibold text-primary">IELTS Trainer</p>
-            <p className="mt-2 text-xs text-muted-foreground">
-              Built in Dhaka for the next generation of Bangladeshi students aiming abroad.
-            </p>
+            <p className="text-base font-semibold text-primary">{t('nav.logo')}</p>
+            <p className="mt-2 text-xs text-muted-foreground">{t('footer.tagline')}</p>
           </div>
           <div>
-            <p className="text-sm font-semibold">Master English</p>
+            <p className="text-sm font-semibold">{t('footer.masterenglish')}</p>
             <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-              <li><Link href="/english/speaking" className="hover:text-foreground">Speaking</Link></li>
-              <li><Link href="/english/writing" className="hover:text-foreground">Writing</Link></li>
-              <li><Link href="/english/listening" className="hover:text-foreground">Listening</Link></li>
-              <li><Link href="/english/reading" className="hover:text-foreground">Reading</Link></li>
-              <li><Link href="/english/grammar" className="hover:text-foreground">Grammar</Link></li>
-              <li><Link href="/english/pronunciation" className="hover:text-foreground">Pronunciation</Link></li>
+              <li><Link href="/english/speaking" className="hover:text-foreground">{t('footer.speaking')}</Link></li>
+              <li><Link href="/english/writing" className="hover:text-foreground">{t('footer.writing')}</Link></li>
+              <li><Link href="/english/listening" className="hover:text-foreground">{t('footer.listening')}</Link></li>
+              <li><Link href="/english/reading" className="hover:text-foreground">{t('footer.reading')}</Link></li>
+              <li><Link href="/english/grammar" className="hover:text-foreground">{t('footer.grammar')}</Link></li>
+              <li><Link href="/english/pronunciation" className="hover:text-foreground">{t('footer.pronunciation')}</Link></li>
             </ul>
           </div>
           <div>
-            <p className="text-sm font-semibold">Exams</p>
+            <p className="text-sm font-semibold">{t('footer.exams')}</p>
             <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-              <li><Link href="/ielts" className="hover:text-foreground">IELTS</Link></li>
-              <li><Link href="/toefl" className="hover:text-foreground">TOEFL</Link></li>
-              <li><Link href="/pte" className="hover:text-foreground">PTE</Link></li>
+              <li><Link href="/ielts" className="hover:text-foreground">{t('nav.ielts')}</Link></li>
+              <li><Link href="/toefl" className="hover:text-foreground">{t('nav.toefl')}</Link></li>
+              <li><Link href="/pte" className="hover:text-foreground">{t('nav.pte')}</Link></li>
+              <li><Link href="/courses" className="hover:text-foreground">{t('footer.courses')}</Link></li>
             </ul>
           </div>
           <div>
-            <p className="text-sm font-semibold">About</p>
+            <p className="text-sm font-semibold">{t('footer.about')}</p>
             <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-              <li><Link href="/about" className="hover:text-foreground">About us</Link></li>
-              <li><Link href="/contact" className="hover:text-foreground">Contact</Link></li>
-              <li><Link href="/privacy" className="hover:text-foreground">Privacy</Link></li>
-              <li><Link href="/terms" className="hover:text-foreground">Terms</Link></li>
+              <li><Link href="/about" className="hover:text-foreground">{t('footer.aboutus')}</Link></li>
+              <li><Link href="/contact" className="hover:text-foreground">{t('footer.contact')}</Link></li>
+              <li><Link href="/privacy" className="hover:text-foreground">{t('footer.privacy')}</Link></li>
+              <li><Link href="/terms" className="hover:text-foreground">{t('footer.terms')}</Link></li>
             </ul>
           </div>
         </div>
         <div className="border-t">
           <p className="mx-auto max-w-6xl px-4 py-4 text-xs text-muted-foreground">
-            © {new Date().getFullYear()} IELTS Trainer · Made with care for Bangladeshi learners.
+            {t('footer.copyright', { year })}
           </p>
         </div>
       </footer>

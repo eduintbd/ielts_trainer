@@ -8,9 +8,13 @@
     "start": "next start -p 3000",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "clean": "rimraf .next .turbo"
+    "clean": "rimraf .next .turbo",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.9.1",
     "@ielts/analytics-events": "workspace:*",
     "@ielts/api-client": "workspace:*",
     "@ielts/auth": "workspace:*",
@@ -25,6 +29,8 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.1",
     "@radix-ui/react-toast": "^1.2.2",
+    "@supabase/ssr": "^0.10.3",
+    "@supabase/supabase-js": "^2.105.4",
     "@tanstack/react-query": "^5.62.7",
     "@vercel/blob": "^0.27.0",
     "ai": "^4.0.20",
@@ -42,7 +48,6 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.1",
-    "@hookform/resolvers": "^3.9.1",
     "react-markdown": "^9.0.1",
     "remark-gfm": "^4.0.0",
     "resend": "^4.0.1",
@@ -53,15 +58,22 @@
     "zustand": "^5.0.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.17.0",
     "eslint-config-next": "^16.0.0",
+    "jsdom": "^29.1.1",
     "postcss": "^8.5.0",
     "rimraf": "^6.0.1",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
   }
 }

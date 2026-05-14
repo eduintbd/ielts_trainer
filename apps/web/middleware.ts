@@ -1,3 +1,4 @@
+import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 const PUBLIC_PATHS = [
@@ -12,6 +13,7 @@ const PUBLIC_PATHS = [
 
 const PUBLIC_PREFIXES = [
   '/api/auth',
+  '/auth',        // OAuth callback: /auth/callback
   '/_next',
   '/favicon.ico',
   '/robots.txt',
@@ -20,25 +22,53 @@ const PUBLIC_PREFIXES = [
   '/ielts',
   '/toefl',
   '/pte',
+  '/courses',
+  '/placement-test',
 ];
 
 export async function middleware(req: NextRequest) {
+  let res = NextResponse.next({ request: req });
+
+  // Skip auth enforcement when Supabase is not yet configured (local dev without .env.local)
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return res;
+  }
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        getAll() {
+          return req.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => req.cookies.set(name, value));
+          res = NextResponse.next({ request: req });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            res.cookies.set(name, value, options),
+          );
+        },
+      },
+    },
+  );
+
+  // Refresh the session — this also rotates the token if it's expired.
+  // IMPORTANT: always use getUser() (not getSession()) for security.
+  const { data: { user } } = await supabase.auth.getUser();
+
   const { pathname } = req.nextUrl;
 
-  if (PUBLIC_PREFIXES.some((p) => pathname.startsWith(p))) {
-    return NextResponse.next();
-  }
-  if (PUBLIC_PATHS.includes(pathname)) {
-    return NextResponse.next();
-  }
+  const isPublic =
+    PUBLIC_PATHS.includes(pathname) ||
+    PUBLIC_PREFIXES.some((p) => pathname.startsWith(p));
 
-  // Fast cookie check; full session validation happens in route handlers.
-  const sessionCookie =
-    req.cookies.get('better-auth.session_token') ?? req.cookies.get('__Secure-better-auth.session_token');
-
-  if (!sessionCookie) {
+  if (!isPublic && !user) {
     if (pathname.startsWith('/api/')) {
-      return NextResponse.json({ code: 'unauthorized', message: 'Auth required' }, { status: 401 });
+      return NextResponse.json(
+        { code: 'unauthorized', message: 'Auth required' },
+        { status: 401 },
+      );
     }
     const url = req.nextUrl.clone();
     url.pathname = '/sign-in';
@@ -46,12 +76,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Admin routes get an additional gate (full role check happens server-side).
-  if (pathname.startsWith('/admin')) {
-    // Pass through; the layout will verify role and redirect if needed.
-  }
-
-  return NextResponse.next();
+  return res;
 }
 
 export const config = {
