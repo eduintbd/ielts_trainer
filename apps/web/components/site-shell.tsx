@@ -48,10 +48,10 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             {user ? (
               <>
                 <Button asChild variant="ghost" size="sm">
-                  <Link href="/dashboard">Dashboard</Link>
+                  <Link href="/dashboard">{t('nav.dashboard')}</Link>
                 </Button>
                 <Button variant="outline" size="sm" onClick={handleSignOut}>
-                  Sign out
+                  {t('nav.signout')}
                 </Button>
               </>
             ) : (

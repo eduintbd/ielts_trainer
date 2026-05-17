@@ -6,10 +6,12 @@ import { ArrowRight, RefreshCw, GraduationCap } from 'lucide-react';
 import { SiteShell } from '@/components/site-shell';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { useLanguage } from '@/components/providers/language-provider';
 import type { PlacementResult } from '@/lib/placement';
 import { LEVEL_COLORS } from '@/lib/placement';
 
 export default function PlacementResultsPage() {
+  const { t } = useLanguage();
   const [result, setResult] = useState<PlacementResult | null>(null);
 
   useEffect(() => {
@@ -27,9 +29,9 @@ export default function PlacementResultsPage() {
     return (
       <SiteShell>
         <section className="mx-auto max-w-lg px-4 py-20 text-center">
-          <p className="text-muted-foreground">No result found. Please take the placement test first.</p>
+          <p className="text-muted-foreground">{t('results.notfound')}</p>
           <Button asChild className="mt-4">
-            <Link href="/placement-test">Take the test</Link>
+            <Link href="/placement-test">{t('results.taketest')}</Link>
           </Button>
         </section>
       </SiteShell>
@@ -44,7 +46,7 @@ export default function PlacementResultsPage() {
         {/* Score summary */}
         <div className="mb-10 text-center">
           <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            Your placement result
+            {t('results.header')}
           </p>
           <div className="mt-4 flex items-center justify-center gap-4">
             <div className="flex flex-col items-center">
@@ -52,7 +54,9 @@ export default function PlacementResultsPage() {
                 {result.score}
                 <span className="text-2xl text-muted-foreground">/{result.total}</span>
               </span>
-              <span className="mt-1 text-sm text-muted-foreground">{percentage}% correct</span>
+              <span className="mt-1 text-sm text-muted-foreground">
+                {t('results.correct', { pct: String(percentage) })}
+              </span>
             </div>
           </div>
           <div
@@ -66,23 +70,19 @@ export default function PlacementResultsPage() {
 
         {/* Score breakdown bar */}
         <div className="mb-10 rounded-lg border bg-card p-5">
-          <p className="mb-3 text-sm font-semibold">Score breakdown</p>
+          <p className="mb-3 text-sm font-semibold">{t('results.breakdown')}</p>
           <div className="space-y-2">
-            {(['grammar', 'vocabulary', 'reading'] as const).map((type, sectionIdx) => {
-              const start = sectionIdx * 5;
-              const qs = Array.from({ length: 5 }, (_, i) => start + i);
+            {(['grammar', 'vocabulary', 'reading'] as const).map((type) => {
+              const labelMap = {
+                grammar: t('placement.type.grammar'),
+                vocabulary: t('placement.type.vocabulary'),
+                reading: t('placement.type.reading'),
+              };
               return (
                 <div key={type}>
                   <div className="mb-1 flex justify-between text-xs text-muted-foreground">
-                    <span className="capitalize">{type}</span>
-                    <span>
-                      {qs.filter((i) => {
-                        const stored = JSON.parse(localStorage.getItem('ielts_placement_result') ?? '{}');
-                        return stored.score !== undefined;
-                      }).length > 0
-                        ? '—'
-                        : '—'}
-                    </span>
+                    <span>{labelMap[type]}</span>
+                    <span>—</span>
                   </div>
                   <div className="h-2 overflow-hidden rounded-full bg-muted">
                     <div
@@ -95,15 +95,15 @@ export default function PlacementResultsPage() {
             })}
           </div>
           <p className="mt-3 text-xs text-muted-foreground">
-            Overall score based on {result.total} questions.
+            {t('results.overall', { total: String(result.total) })}
           </p>
         </div>
 
         {/* Course recommendations */}
         <div>
-          <h2 className="mb-1 text-xl font-bold">Recommended for your level</h2>
+          <h2 className="mb-1 text-xl font-bold">{t('results.reco.title')}</h2>
           <p className="mb-6 text-sm text-muted-foreground">
-            Based on your {result.level} ({result.label}) result, here are the courses we recommend.
+            {t('results.reco.subtitle', { level: result.level, label: result.label })}
           </p>
           <div className="grid gap-4 md:grid-cols-3">
             {result.recommendedCourses.map((course) => (
@@ -113,13 +113,15 @@ export default function PlacementResultsPage() {
                     <GraduationCap className="h-5 w-5 text-primary" />
                     <span className="text-xs font-semibold uppercase text-primary">{course.exam}</span>
                   </div>
-                  <CardTitle className="mt-1 text-base">{course.tier} Course</CardTitle>
+                  <CardTitle className="mt-1 text-base">
+                    {t('results.course.tier', { tier: course.tier })}
+                  </CardTitle>
                   <CardDescription className="text-xs">{course.reason}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Button asChild className="w-full" size="sm">
                     <Link href={course.href}>
-                      View course <ArrowRight className="ml-1 h-3 w-3" />
+                      {t('results.course.link')} <ArrowRight className="ml-1 h-3 w-3" />
                     </Link>
                   </Button>
                 </CardContent>
@@ -131,7 +133,7 @@ export default function PlacementResultsPage() {
         <div className="mt-8 flex flex-wrap gap-3">
           <Button asChild size="lg">
             <Link href="/courses">
-              Browse all courses <ArrowRight className="ml-2 h-4 w-4" />
+              {t('results.browse')} <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
           <Button
@@ -142,7 +144,7 @@ export default function PlacementResultsPage() {
               window.location.href = '/placement-test';
             }}
           >
-            <RefreshCw className="mr-2 h-4 w-4" /> Retake the test
+            <RefreshCw className="mr-2 h-4 w-4" /> {t('results.retake')}
           </Button>
         </div>
       </section>

@@ -7,12 +7,14 @@ import { SiteShell } from '@/components/site-shell';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { sampleQuestions, scorePlacement, type PlacementQuestion } from '@/lib/placement';
+import { useLanguage } from '@/components/providers/language-provider';
 import { cn } from '@ielts/ui';
 
 type Phase = 'intro' | 'quiz';
 
 export default function PlacementTestPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [phase, setPhase] = useState<Phase>('intro');
   const [questions, setQuestions] = useState<PlacementQuestion[]>([]);
   const [current, setCurrent] = useState(0);
@@ -22,6 +24,12 @@ export default function PlacementTestPage() {
   const question = questions[current];
   const isLast = current === questions.length - 1;
   const progress = questions.length > 0 ? ((current + 1) / questions.length) * 100 : 0;
+
+  const typeLabels: Record<string, string> = {
+    grammar: t('placement.type.grammar'),
+    vocabulary: t('placement.type.vocabulary'),
+    reading: t('placement.type.reading'),
+  };
 
   function handleAnswer(idx: number) {
     if (selected !== null) return;
@@ -65,28 +73,26 @@ export default function PlacementTestPage() {
           <div className="mb-6 flex items-center gap-3">
             <ClipboardList className="h-8 w-8 text-primary" />
             <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-              Free · 5 minutes
+              {t('placement.badge')}
             </span>
           </div>
           <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
-            Find your English level
+            {t('placement.title')}
           </h1>
-          <p className="mt-4 text-muted-foreground">
-            15 questions across grammar, vocabulary, and reading comprehension. There is no time limit — take
-            your time with each question. At the end, we'll tell you your CEFR level and recommend the right
-            course for you.
-          </p>
+          <p className="mt-4 text-muted-foreground">{t('placement.desc')}</p>
           <ul className="mt-6 space-y-2 text-sm">
-            {[
-              '5 Grammar questions',
-              '5 Vocabulary questions',
-              '5 Reading comprehension questions',
-              'Your result: A1–A2, B1, B2, or C1–C2',
-              'Personalised course recommendations',
-            ].map((item) => (
-              <li key={item} className="flex items-center gap-2 text-muted-foreground">
+            {(
+              [
+                'placement.check.grammar',
+                'placement.check.vocab',
+                'placement.check.reading',
+                'placement.check.result',
+                'placement.check.reco',
+              ] as const
+            ).map((key) => (
+              <li key={key} className="flex items-center gap-2 text-muted-foreground">
                 <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
-                {item}
+                {t(key)}
               </li>
             ))}
           </ul>
@@ -103,7 +109,7 @@ export default function PlacementTestPage() {
             }}
             data-testid="start-quiz"
           >
-            Start the test <ArrowRight className="ml-2 h-4 w-4" />
+            {t('placement.start')} <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </section>
       </SiteShell>
@@ -118,9 +124,12 @@ export default function PlacementTestPage() {
         {/* Progress bar */}
         <div className="mb-6">
           <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
-            <span className="font-medium capitalize">{question.type}</span>
+            <span className="font-medium">{typeLabels[question.type] ?? question.type}</span>
             <span>
-              Question {current + 1} of {questions.length}
+              {t('placement.quiz.question', {
+                current: String(current + 1),
+                total: String(questions.length),
+              })}
             </span>
           </div>
           <div className="h-1.5 overflow-hidden rounded-full bg-muted">
@@ -135,14 +144,16 @@ export default function PlacementTestPage() {
           <CardHeader>
             {question.passage && (
               <div className="mb-4 rounded-lg bg-muted/60 p-4 text-sm leading-relaxed text-foreground">
-                <p className="mb-1 text-xs font-semibold uppercase text-muted-foreground">Read the passage</p>
+                <p className="mb-1 text-xs font-semibold uppercase text-muted-foreground">
+                  {t('placement.quiz.passage')}
+                </p>
                 {question.passage}
               </div>
             )}
             <CardTitle className="text-lg leading-snug" data-testid="question-text">
               {question.question}
             </CardTitle>
-            <CardDescription>Choose the best answer.</CardDescription>
+            <CardDescription>{t('placement.quiz.choosebest')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             {question.options.map((option, idx) => {
@@ -179,14 +190,14 @@ export default function PlacementTestPage() {
 
         <div className="mt-6 flex items-center justify-between">
           <Button variant="ghost" onClick={handleBack} size="sm">
-            <ArrowLeft className="mr-1 h-4 w-4" /> Back
+            <ArrowLeft className="mr-1 h-4 w-4" /> {t('placement.quiz.back')}
           </Button>
           <Button
             onClick={handleNext}
             disabled={selected === null}
             data-testid="next-button"
           >
-            {isLast ? 'See my results' : 'Next question'}{' '}
+            {isLast ? t('placement.quiz.see') : t('placement.quiz.next')}{' '}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>

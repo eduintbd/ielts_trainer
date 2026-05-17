@@ -78,7 +78,7 @@ describe('translations coverage', () => {
     // EN toggle label should be in Bangla script (to switch to Bangla)
     expect(translations.en['lang.toggle']).toContain('বাংলা');
     // BN toggle label should be in English (to switch to English)
-    expect(translations.bn['lang.toggle']).toBe('English');
+    expect(translations.bn['lang.toggle']).toBe('EN');
   });
 });
 
