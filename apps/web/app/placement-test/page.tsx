@@ -6,23 +6,22 @@ import { ArrowRight, ArrowLeft, CheckCircle2, ClipboardList } from 'lucide-react
 import { SiteShell } from '@/components/site-shell';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { PLACEMENT_QUESTIONS, scorePlacement } from '@/lib/placement';
+import { sampleQuestions, scorePlacement, type PlacementQuestion } from '@/lib/placement';
 import { cn } from '@ielts/ui';
 
-type Phase = 'intro' | 'quiz' | 'done';
+type Phase = 'intro' | 'quiz';
 
 export default function PlacementTestPage() {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>('intro');
+  const [questions, setQuestions] = useState<PlacementQuestion[]>([]);
   const [current, setCurrent] = useState(0);
-  const [answers, setAnswers] = useState<(number | null)[]>(
-    Array(PLACEMENT_QUESTIONS.length).fill(null),
-  );
+  const [answers, setAnswers] = useState<(number | null)[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
 
-  const question = PLACEMENT_QUESTIONS[current];
-  const isLast = current === PLACEMENT_QUESTIONS.length - 1;
-  const progress = ((current + 1) / PLACEMENT_QUESTIONS.length) * 100;
+  const question = questions[current];
+  const isLast = current === questions.length - 1;
+  const progress = questions.length > 0 ? ((current + 1) / questions.length) * 100 : 0;
 
   function handleAnswer(idx: number) {
     if (selected !== null) return;
@@ -35,9 +34,14 @@ export default function PlacementTestPage() {
     setAnswers(newAnswers);
 
     if (isLast) {
-      const result = scorePlacement(newAnswers);
+      const result = scorePlacement(newAnswers, questions);
       localStorage.setItem('ielts_placement_result', JSON.stringify(result));
-      setPhase('done');
+      // Reset to intro so back-navigation always shows the start screen
+      setPhase('intro');
+      setQuestions([]);
+      setCurrent(0);
+      setAnswers([]);
+      setSelected(null);
       router.push('/placement-test/results');
       return;
     }
@@ -51,7 +55,7 @@ export default function PlacementTestPage() {
       return;
     }
     setCurrent((c) => c - 1);
-    setSelected(answers[current - 1]);
+    setSelected(answers[current - 1] ?? null);
   }
 
   if (phase === 'intro') {
@@ -90,9 +94,11 @@ export default function PlacementTestPage() {
             size="lg"
             className="mt-8"
             onClick={() => {
+              const sampled = sampleQuestions();
+              setQuestions(sampled);
               setPhase('quiz');
               setCurrent(0);
-              setAnswers(Array(PLACEMENT_QUESTIONS.length).fill(null));
+              setAnswers(Array(sampled.length).fill(null));
               setSelected(null);
             }}
             data-testid="start-quiz"
@@ -104,6 +110,8 @@ export default function PlacementTestPage() {
     );
   }
 
+  if (!question) return null;
+
   return (
     <SiteShell>
       <section className="mx-auto max-w-2xl px-4 py-10">
@@ -112,7 +120,7 @@ export default function PlacementTestPage() {
           <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
             <span className="font-medium capitalize">{question.type}</span>
             <span>
-              Question {current + 1} of {PLACEMENT_QUESTIONS.length}
+              Question {current + 1} of {questions.length}
             </span>
           </div>
           <div className="h-1.5 overflow-hidden rounded-full bg-muted">
