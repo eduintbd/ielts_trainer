@@ -1,0 +1,172 @@
+================================================================================
+SESSION SUMMARY — 2026-05-17
+================================================================================
+
+Project: IELTS Trainer (eduintbd/ielts_trainer)
+Developer: Mohammed Sharraf
+
+--------------------------------------------------------------------------------
+WORK DONE THIS SESSION
+--------------------------------------------------------------------------------
+
+1. PULLED LATEST CHANGES
+   - Pulled 8 new commits from origin/main (auth layer updates: sign-in,
+     sign-up pages, auth/callback route, auth-provider, supabase client/server/
+     admin helpers, session.ts).
+
+2. DEV SERVER
+   - Killed stale process on port 3000 and restarted `pnpm dev` (Next.js 16,
+     Turbopack) at http://localhost:3000.
+
+3. PLACEMENT TEST — RANDOMISED QUESTIONS (Feature fix + expansion)
+
+   Problem: Every test attempt showed the exact same 15 questions.
+
+   Solution — Phase 1 (initial randomisation):
+   - Expanded the question bank from 15 to 30 questions (10 grammar, 10 vocab,
+     2 reading passages × 5 questions).
+   - Added `sampleQuestions()` function that shuffles each bank and picks
+     5 grammar + 5 vocab + 1 random reading passage per test.
+   - Updated `scorePlacement()` to accept the sampled question set as a
+     parameter (was previously hardcoded to the global array).
+   - Updated `page.tsx` to call `sampleQuestions()` on "Start the test" and
+     store the result in component state.
+   - Updated `placement.test.ts` for the new API.
+
+   Problem: After completing the test and navigating back to /placement-test,
+   the "Start the test" intro screen was missing (blank page).
+
+   Root cause: On quiz completion, `setPhase('done')` was called before
+   `router.push('/placement-test/results')`. Next.js router cache could restore
+   this state on back-navigation, skipping the intro guard.
+
+   Fix: Reset all state (phase → 'intro', questions → [], etc.) before pushing
+   to results, so the cached state is always the intro screen.
+
+   Solution — Phase 2 (user requested 100 questions per type):
+   - Grammar bank expanded to 100 questions (g1–g100).
+   - Vocabulary bank expanded to 100 questions (v1–v100).
+   - Reading bank expanded to 20 passages × 5 questions = 100 reading questions.
+
+   Final bank: 300 total questions → each test draws 15 (5+5+5).
+
+4. TESTS
+   - All 88 tests passing throughout.
+
+5. COMMITTED & PUSHED
+   Commit: 757450a
+   Message: feat(placement): randomised question bank with 300 unique questions
+
+--------------------------------------------------------------------------------
+FILES CHANGED (Session 1)
+--------------------------------------------------------------------------------
+  apps/web/lib/placement.ts            — main question bank + logic
+  apps/web/app/placement-test/page.tsx — quiz UI, sampling, back-nav fix
+  apps/web/__tests__/placement.test.ts — updated test suite
+
+================================================================================
+SESSION SUMMARY — 2026-05-18
+================================================================================
+
+Project: IELTS Trainer (eduintbd/ielts_trainer)
+Developer: Mohammed Sharraf
+
+--------------------------------------------------------------------------------
+WORK DONE THIS SESSION
+--------------------------------------------------------------------------------
+
+1. BANGLA-FIRST SITE — DEFAULT LANGUAGE + FULL TRANSLATION COVERAGE
+   Commit: 42c33af
+   Message: feat(i18n): Bangla-first site with full translation coverage
+
+   Changes:
+   a) Default language changed from English to Bangla
+      - apps/web/components/providers/language-provider.tsx
+        `useState<Lang>('en')` → `useState<Lang>('bn')`
+      - Language toggle now shows "EN" in Bangla mode, "বাংলা" in English mode.
+
+   b) ~90 new translation keys added to translations.ts (en + bn)
+      New sections covered:
+      - Nav: nav.dashboard, nav.signout
+      - Home page sections: step1, step2, step3, why, CTA, skill summaries,
+        exam card badges/bullets, feature titles/descriptions, tiles
+      - Placement test: badge, description, checklist items, start button,
+        question type labels, quiz controls (back, next, see results)
+      - Results page: all labels, score breakdown, recommendation cards
+      - Courses page: hero, pills, exam badges, pricing table, placement nudge
+      - Exam detail page: breadcrumb, module counts, tier cards, FAQs, CTA
+
+   c) Home page (apps/web/app/page.tsx)
+      - All hardcoded English strings replaced with t() calls
+      - SKILLS, EXAMS, FEATURES arrays refactored to use translation keys
+      - Section titles, subtitles, tiles, and final CTA all translated
+
+   d) Courses page (apps/web/app/courses/page.tsx)
+      - Converted from server component to client component
+      - metadata export removed (acceptable trade-off for bilingual support)
+      - All hardcoded strings replaced with t()
+
+   e) Course detail page split into server + client (apps/web/app/courses/[exam]/)
+      - page.tsx kept as server component: generateStaticParams, generateMetadata,
+        data fetch — SEO metadata preserved
+      - ExamCourseClient.tsx created as new 'use client' component: all UI,
+        ModuleRow, TierCard components — all text via useLanguage()
+
+   f) Placement test page (apps/web/app/placement-test/page.tsx)
+      - Badge, description, checklist items, start button translated
+      - Question type labels (grammar/vocabulary/reading) translated
+      - Progress bar counter, passage label, "Choose the best answer" translated
+      - Back / Next question / See my results buttons translated
+
+   g) Results page (apps/web/app/placement-test/results/page.tsx)
+      - All UI labels translated: header, score %, breakdown, recommendations
+      - Browse / Retake buttons translated
+
+   h) Site shell (apps/web/components/site-shell.tsx)
+      - "Dashboard" and "Sign out" buttons now use t('nav.dashboard') and
+        t('nav.signout')
+
+   i) i18n test updated (apps/web/__tests__/i18n.test.ts)
+      - bn lang.toggle expectation updated from 'English' to 'EN'
+      - All 88 tests passing
+
+2. PAGES STILL WITH HARDCODED ENGLISH CONTENT (NEXT SESSION)
+   The following informational pages have English body content — nav/footer
+   are already in Bangla via SiteShell. Full content translation is pending:
+   - /ielts            (apps/web/app/ielts/page.tsx)
+   - /toefl            (apps/web/app/toefl/page.tsx)
+   - /pte              (apps/web/app/pte/page.tsx)
+   - /english          (apps/web/app/english/page.tsx)
+   - /english/speaking (apps/web/app/english/speaking/page.tsx)
+   - /english/writing  (apps/web/app/english/writing/page.tsx)
+   - /english/listening(apps/web/app/english/listening/page.tsx)
+   - /english/reading  (apps/web/app/english/reading/page.tsx)
+   - /english/grammar  (apps/web/app/english/grammar/page.tsx)
+   - /english/pronunciation (apps/web/app/english/pronunciation/page.tsx)
+   All 10 pages have been read and content catalogued — ready to write next.
+
+--------------------------------------------------------------------------------
+FILES CHANGED (Session 2)
+--------------------------------------------------------------------------------
+  apps/web/lib/i18n/translations.ts                     — ~90 new keys en+bn
+  apps/web/components/providers/language-provider.tsx   — default 'en'→'bn'
+  apps/web/components/site-shell.tsx                    — Dashboard/Sign out
+  apps/web/app/page.tsx                                 — full t() coverage
+  apps/web/app/courses/page.tsx                         — client + translated
+  apps/web/app/courses/[exam]/page.tsx                  — slim server wrapper
+  apps/web/app/courses/[exam]/ExamCourseClient.tsx      — new client component
+  apps/web/app/placement-test/page.tsx                  — full t() coverage
+  apps/web/app/placement-test/results/page.tsx          — full t() coverage
+  apps/web/__tests__/i18n.test.ts                       — toggle test updated
+
+--------------------------------------------------------------------------------
+OUTSTANDING / NEXT STEPS
+--------------------------------------------------------------------------------
+  - Translate body content of all 10 informational pages listed above
+    (convert to client components, add bilingual content objects en/bn)
+  - Auth routes (sign-in, sign-up) wired to stubs — Better Auth /
+    Supabase integration pending.
+  - Enrollment + payment flow (Bkash / card) not yet implemented.
+  - AI service (voice coach, mock tests) requires GPU VPS + env vars.
+
+================================================================================
