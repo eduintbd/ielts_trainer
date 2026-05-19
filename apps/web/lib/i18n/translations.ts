@@ -208,6 +208,20 @@ const translations = {
     'exam.cta.create': 'Create free account',
     'exam.cta.placement': 'Take placement test',
 
+    // Course catalogue
+    'course.ielts.title': 'IELTS Preparation',
+    'course.ielts.desc':
+      'Structured IELTS prep from Band 5.0 to 8.0. Covers all four skills — Listening, Reading, Writing, and Speaking — with AI-graded mock tests and real examiner rubrics.',
+    'course.toefl.title': 'TOEFL iBT Preparation',
+    'course.toefl.desc':
+      'Complete TOEFL iBT prep from 60 to 110. Master Reading, Listening, Speaking, and Writing with AI-scored practice tests and SpeechRater-aligned feedback.',
+    'course.pte.title': 'PTE Academic Preparation',
+    'course.pte.desc':
+      'AI-exam prep for AI-graded PTE Academic. Master all 20 item types, understand the enabling-skills engine, and target 79+ for Australian PR or top university entry.',
+    'tier.foundation': 'Foundation',
+    'tier.intermediate': 'Intermediate',
+    'tier.advanced': 'Advanced',
+
     // Language toggle
     'lang.toggle': 'বাংলা',
     'lang.toggle.current': 'EN',
@@ -419,6 +433,20 @@ const translations = {
       'কোন স্তরটি আপনার জন্য উপযুক্ত বুঝতে পারছেন না? আগে বিনামূল্যের ৫ মিনিটের প্লেসমেন্ট টেস্ট দিন।',
     'exam.cta.create': 'ফ্রি অ্যাকাউন্ট তৈরি করুন',
     'exam.cta.placement': 'প্লেসমেন্ট টেস্ট দিন',
+
+    // Course catalogue
+    'course.ielts.title': 'IELTS প্রস্তুতি',
+    'course.ielts.desc':
+      'ব্যান্ড ৫.০ থেকে ৮.০ পর্যন্ত কাঠামোবদ্ধ IELTS প্রস্তুতি। AI-গ্রেডেড মক টেস্টসহ সব চারটি দক্ষতা — লিসেনিং, রিডিং, রাইটিং এবং স্পিকিং।',
+    'course.toefl.title': 'TOEFL iBT প্রস্তুতি',
+    'course.toefl.desc':
+      '৬০ থেকে ১১০ পর্যন্ত সম্পূর্ণ TOEFL iBT প্রস্তুতি। AI-স্কোরড প্র্যাকটিস টেস্ট এবং SpeechRater-ভিত্তিক ফিডব্যাকসহ সব অংশ।',
+    'course.pte.title': 'PTE Academic প্রস্তুতি',
+    'course.pte.desc':
+      'AI-গ্রেডেড PTE Academic-এর জন্য AI প্রস্তুতি। সব ২০টি আইটেম টাইপ আয়ত্ত করুন, স্কোরিং ইঞ্জিন বুঝুন এবং অস্ট্রেলিয়ান PR বা শীর্ষ বিশ্ববিদ্যালয়ের জন্য ৭৯+ লক্ষ্য করুন।',
+    'tier.foundation': 'ফাউন্ডেশন',
+    'tier.intermediate': 'ইন্টারমিডিয়েট',
+    'tier.advanced': 'অ্যাডভান্সড',
 
     // Language toggle
     'lang.toggle': 'EN',

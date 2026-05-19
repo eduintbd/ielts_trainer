@@ -8,22 +8,34 @@ import { EXAM_COURSES } from '@/lib/courses';
 import { useLanguage } from '@/components/providers/language-provider';
 import type { TranslationKey } from '@/lib/i18n';
 
-const EXAM_META: Record<string, { badgeKey: TranslationKey; color: string; accent: string }> = {
+const EXAM_META: Record<string, { badgeKey: TranslationKey; titleKey: TranslationKey; descKey: TranslationKey; color: string; accent: string }> = {
   ielts: {
     badgeKey: 'courses.ielts.badge',
+    titleKey: 'course.ielts.title',
+    descKey: 'course.ielts.desc',
     color: 'from-teal-50 to-teal-100 border-teal-200',
     accent: 'text-teal-700',
   },
   toefl: {
     badgeKey: 'courses.toefl.badge',
+    titleKey: 'course.toefl.title',
+    descKey: 'course.toefl.desc',
     color: 'from-blue-50 to-blue-100 border-blue-200',
     accent: 'text-blue-700',
   },
   pte: {
     badgeKey: 'courses.pte.badge',
+    titleKey: 'course.pte.title',
+    descKey: 'course.pte.desc',
     color: 'from-purple-50 to-purple-100 border-purple-200',
     accent: 'text-purple-700',
   },
+};
+
+const TIER_KEYS: Record<string, TranslationKey> = {
+  Foundation: 'tier.foundation',
+  Intermediate: 'tier.intermediate',
+  Advanced: 'tier.advanced',
 };
 
 export default function CoursesPage() {
@@ -73,13 +85,13 @@ export default function CoursesPage() {
               >
                 <GraduationCap className={`h-8 w-8 ${meta.accent}`} />
                 <p className={`mt-3 text-xs font-semibold uppercase ${meta.accent}`}>{t(meta.badgeKey)}</p>
-                <h2 className="mt-1 text-2xl font-bold">{course.title}</h2>
-                <p className="mt-2 text-sm text-muted-foreground">{course.description}</p>
+                <h2 className="mt-1 text-2xl font-bold">{t(meta.titleKey)}</h2>
+                <p className="mt-2 text-sm text-muted-foreground">{t(meta.descKey)}</p>
 
                 <div className="mt-4 space-y-1 text-sm">
                   {course.tiers.map((tier) => (
                     <div key={tier.id} className="flex items-center justify-between">
-                      <span className="font-medium">{tier.name}</span>
+                      <span className="font-medium">{t(TIER_KEYS[tier.name] ?? 'tier.foundation')}</span>
                       <span className="text-muted-foreground">
                         {tier.currency}{tier.price.toLocaleString('en-BD')}{t('courses.pricing.mo')}
                       </span>
@@ -122,7 +134,7 @@ export default function CoursesPage() {
                 const pteTier = EXAM_COURSES.pte.tiers[tierIdx]!;
                 return (
                   <tr key={tierIdx} className="border-b last:border-0">
-                    <td className="px-4 py-3 font-medium">{ieltsTier.name}</td>
+                    <td className="px-4 py-3 font-medium">{t(TIER_KEYS[ieltsTier.name] ?? 'tier.foundation')}</td>
                     <td className="px-4 py-3 text-center">
                       ৳{ieltsTier.price.toLocaleString('en-BD')}{t('courses.pricing.mo')}
                     </td>

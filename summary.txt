@@ -170,3 +170,104 @@ OUTSTANDING / NEXT STEPS
   - AI service (voice coach, mock tests) requires GPU VPS + env vars.
 
 ================================================================================
+SESSION SUMMARY — 2026-05-19
+================================================================================
+
+Project: IELTS Trainer (eduintbd/ielts_trainer)
+Developer: Mohammed Sharraf
+
+--------------------------------------------------------------------------------
+WORK DONE THIS SESSION
+--------------------------------------------------------------------------------
+
+1. FULL BILINGUAL TRANSLATION — ALL REMAINING INFORMATIONAL PAGES
+
+   All 10 informational pages catalogued as outstanding in the previous session
+   are now fully bilingual. Pattern used: convert server component → 'use client',
+   remove `export const metadata`, add inline `CONTENT = { en: {...}, bn: {...} }`
+   object, use `const { lang } = useLanguage(); const c = CONTENT[lang]`.
+
+   a) /courses (apps/web/app/courses/page.tsx)
+      - Added 9 new en+bn key pairs to translations.ts for course titles,
+        descriptions, and tier names (Foundation/Intermediate/Advanced).
+      - EXAM_META now carries titleKey/descKey; TIER_KEYS map added;
+        course.title, course.description, tier.name all go through t().
+
+   b) /english (apps/web/app/english/page.tsx)
+      - Converted to 'use client'.
+      - CONTENT covers: hero, skills grid (6 cards with per-language
+        title/summary), 90-day path (4 days), why-it-works tiles (4),
+        free habits (4), ready-to-start CTA.
+
+   c) /ielts (apps/web/app/ielts/page.tsx)
+      - Full bilingual rewrite: hero, Academic vs General tiles, 4-module
+        section (Listening/Reading/Writing/Speaking — headers, descriptions,
+        all bullet tips), band scoring (5.5→8+), test centres, 90-day plan,
+        4 Bangladesh-specific FAQs.
+
+   d) /toefl (apps/web/app/toefl/page.tsx)
+      - Full bilingual rewrite: hero, 4 difference tiles, 4 sections
+        (all headers + desc + tips arrays), score targets, TOEFL in Bangladesh,
+        90-day plan, 3 common pitfalls.
+
+   e) /pte (apps/web/app/pte/page.tsx)
+      - Full bilingual rewrite: hero, 4 difference tiles, 3 parts (all 20 item
+        type names + descriptions), AI-grading rules (5), score targets,
+        PTE in Bangladesh, 60-day plan.
+
+   f) /english/speaking (apps/web/app/english/speaking/page.tsx)
+      - CONTENT: hero, 4 why-stuck tiles, 4 habit items, pronunciation
+        watchlist (6 tiles), tonight's 4-step exercise.
+
+   g) /english/writing (apps/web/app/english/writing/page.tsx)
+      - CONTENT: hero, translation-trap demo card (Bangla sentence preserved,
+        labels translated), 6 paragraph templates, 5 grammar leaks,
+        200-word habit with today's prompt.
+
+   h) /english/listening (apps/web/app/english/listening/page.tsx)
+      - CONTENT: hero, 3 why-it-sounds-fast tiles, 4-week ladder, 6 accent
+        tiles, tonight's 4-step drill.
+
+   i) /english/reading (apps/web/app/english/reading/page.tsx)
+      - CONTENT: hero, 4-pass method, 5 question-type tiles, two-newspaper
+        rule, 3 exam speed targets.
+
+   j) /english/grammar (apps/web/app/english/grammar/page.tsx)
+      - Bilingual LEAKS array (12 items): titles + fix explanations translated;
+        wrong/right English examples preserved.
+      - CONTENT: hero, leaks section, 4 drill-tip tiles, tense quick-reference.
+
+   k) /english/pronunciation (apps/web/app/english/pronunciation/page.tsx)
+      - CONTENT: hero, 6 phoneme-map tiles (phonetic symbols preserved,
+        descriptions translated), minimal-pair drill, sentence-stress demo,
+        3-week clarity plan.
+
+2. TESTS
+   - All 88 tests passing throughout (no regressions).
+
+--------------------------------------------------------------------------------
+FILES CHANGED (Session 3)
+--------------------------------------------------------------------------------
+  apps/web/lib/i18n/translations.ts              — 9 new course/tier key pairs en+bn
+  apps/web/app/courses/page.tsx                  — course titles/desc/tier names via t()
+  apps/web/app/english/page.tsx                  — full bilingual client component
+  apps/web/app/ielts/page.tsx                    — full bilingual client component
+  apps/web/app/toefl/page.tsx                    — full bilingual client component
+  apps/web/app/pte/page.tsx                      — full bilingual client component
+  apps/web/app/english/speaking/page.tsx         — full bilingual client component
+  apps/web/app/english/writing/page.tsx          — full bilingual client component
+  apps/web/app/english/listening/page.tsx        — full bilingual client component
+  apps/web/app/english/reading/page.tsx          — full bilingual client component
+  apps/web/app/english/grammar/page.tsx          — full bilingual client component
+  apps/web/app/english/pronunciation/page.tsx    — full bilingual client component
+
+--------------------------------------------------------------------------------
+OUTSTANDING / NEXT STEPS
+--------------------------------------------------------------------------------
+  - All public-facing content pages are now fully bilingual. ✓
+  - Auth routes (sign-in, sign-up) wired to stubs — Better Auth /
+    Supabase integration pending.
+  - Enrollment + payment flow (Bkash / card) not yet implemented.
+  - AI service (voice coach, mock tests) requires GPU VPS + env vars.
+
+================================================================================
