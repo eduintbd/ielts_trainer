@@ -1,4 +1,3 @@
-export const dynamic = 'force-dynamic';
 import { db, schema, sql } from '@ielts/db';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
