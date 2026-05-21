@@ -24,6 +24,7 @@ const PUBLIC_PREFIXES = [
   '/pte',
   '/courses',
   '/placement-test',
+  '/learn',
 ];
 
 export async function middleware(req: NextRequest) {

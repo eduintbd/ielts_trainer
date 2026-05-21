@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { LanguageToggle } from '@/components/language-toggle';
 import { useLanguage } from '@/components/providers/language-provider';
@@ -11,6 +11,8 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   const { t } = useLanguage();
   const { user, signOut } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+  const isLearnPage = pathname.startsWith('/learn');
   const year = new Date().getFullYear().toString();
 
   async function handleSignOut() {
@@ -42,27 +44,32 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             <Button asChild variant="ghost" size="sm">
               <Link href="/courses">{t('nav.courses')}</Link>
             </Button>
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/learn">{t('nav.learn')}</Link>
+            </Button>
           </nav>
           <div className="flex items-center gap-2">
             <LanguageToggle />
-            {user ? (
-              <>
-                <Button asChild variant="ghost" size="sm">
-                  <Link href="/dashboard">{t('nav.dashboard')}</Link>
-                </Button>
-                <Button variant="outline" size="sm" onClick={handleSignOut}>
-                  {t('nav.signout')}
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button asChild variant="ghost" size="sm">
-                  <Link href="/sign-in">{t('nav.signin')}</Link>
-                </Button>
-                <Button asChild size="sm">
-                  <Link href="/sign-up">{t('nav.getstarted')}</Link>
-                </Button>
-              </>
+            {!isLearnPage && (
+              user ? (
+                <>
+                  <Button asChild variant="ghost" size="sm">
+                    <Link href="/dashboard">{t('nav.dashboard')}</Link>
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={handleSignOut}>
+                    {t('nav.signout')}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button asChild variant="ghost" size="sm">
+                    <Link href="/sign-in">{t('nav.signin')}</Link>
+                  </Button>
+                  <Button asChild size="sm">
+                    <Link href="/sign-up">{t('nav.getstarted')}</Link>
+                  </Button>
+                </>
+              )
             )}
           </div>
         </div>
@@ -94,6 +101,10 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
               <li><Link href="/toefl" className="hover:text-foreground">{t('nav.toefl')}</Link></li>
               <li><Link href="/pte" className="hover:text-foreground">{t('nav.pte')}</Link></li>
               <li><Link href="/courses" className="hover:text-foreground">{t('footer.courses')}</Link></li>
+              <li><Link href="/learn" className="hover:text-foreground">{t('nav.learn')}</Link></li>
+              <li><Link href="/learn/vocabulary" className="hover:text-foreground">{t('footer.vocabulary')}</Link></li>
+              <li><Link href="/learn/speaking-topics" className="hover:text-foreground">{t('footer.speakingtopics')}</Link></li>
+              <li><Link href="/learn/resources" className="hover:text-foreground">{t('footer.freeresources')}</Link></li>
             </ul>
           </div>
           <div>
