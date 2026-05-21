@@ -61,7 +61,7 @@ export default function SignInPage() {
       return;
     }
     toast.success('Welcome back!');
-    router.push(redirectTo);
+    router.push(redirectTo as never);
     router.refresh();
   }
 
