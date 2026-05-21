@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import Link from 'next/link';
 import { db } from '@ielts/db';
 import { desc } from 'drizzle-orm';

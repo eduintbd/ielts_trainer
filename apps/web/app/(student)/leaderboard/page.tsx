@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { db, schema, eq, desc } from '@ielts/db';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Trophy } from 'lucide-react';
