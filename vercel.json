@@ -2,7 +2,7 @@
   "buildCommand": "pnpm turbo run build --filter=@ielts/web",
   "installCommand": "pnpm install --frozen-lockfile",
   "framework": "nextjs",
-  "outputDirectory": "apps/web/.next",
+  "outputDirectory": ".next",
   "rewrites": [
     { "source": "/ai-service/:path*", "destination": "$AI_SERVICE_URL/:path*" }
   ],
