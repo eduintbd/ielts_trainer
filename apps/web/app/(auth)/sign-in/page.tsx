@@ -1,8 +1,6 @@
 'use client';
 
-export const dynamic = 'force-dynamic';
-
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -34,7 +32,7 @@ function FacebookIcon() {
   );
 }
 
-export default function SignInPage() {
+function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
@@ -85,9 +83,55 @@ export default function SignInPage() {
       toast.error(error.message);
       setLoading(false);
     }
-    // browser redirects — keep loading state
   }
 
+  return (
+    <CardContent className="space-y-5">
+      <div className="grid grid-cols-2 gap-3">
+        <Button variant="outline" onClick={() => signInWithOAuth('google')} disabled={loading} className="gap-2">
+          <GoogleIcon /> Google
+        </Button>
+        <Button variant="outline" onClick={() => signInWithOAuth('facebook')} disabled={loading} className="gap-2">
+          <FacebookIcon /> Facebook
+        </Button>
+      </div>
+
+      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+        <div className="h-px flex-1 bg-border" />
+        <span>or sign in with email</span>
+        <div className="h-px flex-1 bg-border" />
+      </div>
+
+      <form onSubmit={onSubmit} className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </div>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="password">Password</Label>
+            <Link href="/forgot-password" className="text-xs text-muted-foreground hover:text-primary">
+              Forgot password?
+            </Link>
+          </div>
+          <Input id="password" type="password" required autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        </div>
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? 'Signing in…' : 'Sign in'}
+        </Button>
+      </form>
+
+      <p className="text-center text-sm text-muted-foreground">
+        Don&apos;t have an account?{' '}
+        <Link href="/sign-up" className="font-medium text-primary hover:underline">
+          Sign up free
+        </Link>
+      </p>
+    </CardContent>
+  );
+}
+
+export default function SignInPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/30 p-4">
       <Card className="w-full max-w-md">
@@ -98,77 +142,9 @@ export default function SignInPage() {
           <CardTitle>Welcome back</CardTitle>
           <CardDescription>Sign in to continue your study plan.</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-5">
-          {/* OAuth */}
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              variant="outline"
-              onClick={() => signInWithOAuth('google')}
-              disabled={loading}
-              className="gap-2"
-            >
-              <GoogleIcon /> Google
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => signInWithOAuth('facebook')}
-              disabled={loading}
-              className="gap-2"
-            >
-              <FacebookIcon /> Facebook
-            </Button>
-          </div>
-
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <div className="h-px flex-1 bg-border" />
-            <span>or sign in with email</span>
-            <div className="h-px flex-1 bg-border" />
-          </div>
-
-          {/* Email / password */}
-          <form onSubmit={onSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                required
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
-                <Link
-                  href="/forgot-password"
-                  className="text-xs text-muted-foreground hover:text-primary"
-                >
-                  Forgot password?
-                </Link>
-              </div>
-              <Input
-                id="password"
-                type="password"
-                required
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Signing in…' : 'Sign in'}
-            </Button>
-          </form>
-
-          <p className="text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{' '}
-            <Link href="/sign-up" className="font-medium text-primary hover:underline">
-              Sign up free
-            </Link>
-          </p>
-        </CardContent>
+        <Suspense fallback={<CardContent><div className="h-48 animate-pulse rounded-lg bg-muted" /></CardContent>}>
+          <SignInForm />
+        </Suspense>
       </Card>
     </div>
   );
